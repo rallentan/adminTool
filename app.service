@@ -1,0 +1,20 @@
+[Unit]
+Description=adminTool
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+User=services
+WorkingDirectory=/opt/adminTool/
+ExecStart=/usr/bin/npm start
+
+Environment=dbHost=127.0.0.1
+Environment=dbPort=33306
+Environment=dbUser=adminTool
+Environment=dbPassword=PaSsWoRd
+
+[Install]
+WantedBy=multi-user.target

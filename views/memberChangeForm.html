@@ -1,0 +1,137 @@
+<html>
+
+<head>
+    <title>Admin</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--<link rel="stylesheet" href="/stylesheets/style.css">-->
+    <!--<link rel="stylesheet" href="https://cdnjs.com/libraries/bulma">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+          integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+</head>
+
+<body>
+
+<section id="root" class="section">
+    <div class="container">
+        <form class="box" @submit.prevent="handleSubmit"> <!-- method="post" action="/"> -->
+            <h1 class="title">Honour Guard Member Details</h1>
+            <br />
+            <progress v-if="isLoading" class="progress is-small is-primary" max="100">15%</progress>
+            <br />
+            <div class="field">
+                <label class="label">Gender</label>
+                <p class="help">Gender is needed to show your rank name correctly in Discord.</p>
+                <div class="control" id="gender">
+                    <label class="radio">
+                        <input type="radio" id="genderMale" name="gender" value="male">
+                        Male
+                    </label>
+                    <label class="radio">
+                        <input type="radio" id="genderFemale" name="gender" value="female">
+                        Female
+                    </label>
+                </div>
+            </div>
+            <br />
+            <div class="field">
+                <label class="label">Rank</label>
+                <div class="select is-rounded">
+                    <select id="rank" name="rank" v-model="gameRank">
+                        <option value="23">Crown Prince</option>
+                        <option value="22">Prince</option>
+                        <option value="21">Duke</option>
+                        <option value="20">Marquis</option>
+                        <option value="19">Earl</option>
+                        <option value="18">Viscount</option>
+                        <option value="17">Baron</option>
+                        <option value="16">Knight</option>
+                        <option value="15">Squire</option>
+                        <option value="14">Page</option>
+                        <option value="13">Gentleman</option>
+                        <option value="12">Alderman</option>
+                        <option value="11">Yeoman</option>
+                        <option value="10">Thane</option>
+                        <option value="9">Commoner</option>
+                        <option value="8">Freeman</option>
+                        <option value="7">Bondsman</option>
+                        <option value="6">Villein</option>
+                        <option value="5">Serf</option>
+                        <option value="4">Peasant</option>
+                        <option value="3">Yokel</option>
+                        <option value="2">Bumpkin</option>
+                        <option value="1">Village Idiot</option>
+                    </select>
+                </div>
+            </div>
+            <br />
+            <div class="field">
+                <label class="label">Catapult Production</label>
+                <p class="help">Catapults produced per day in all villages combined.</p>
+                <div class="control">
+                    <input class="input is-rounded" type="text" placeholder="e.g. 20" id="catapult_production">
+                </div>
+            </div>
+            <br />
+            <div class="field">
+                <label class="label">Finished Basics</label>
+                <p class="help">Check this only if you have finished every item on the basic checklist.</p>
+                <label class="checkbox">
+                    <input type="checkbox" id="finishedBasics">
+                    Finished basics
+                </label>
+            </div>
+            <br />
+            <div class="field">
+                <label class="label">Finished Supplier Level 1</label>
+                <p class="help">Check this only if you have finished level 1 of the supplier checklist.</p>
+                <label class="checkbox">
+                    <input type="checkbox" id="finishedSupplier1">
+                    Finished supplier 1
+                </label>
+            </div>
+            <br />
+            <div class="field">
+                <label class="label">Finished Monker Level 1</label>
+                <p class="help">Check this only if you have finished level 1 of the monker checklist.</p>
+                <label class="checkbox">
+                    <input type="checkbox" id="finishedMonker1">
+                    Finished monker 1
+                </label>
+            </div>
+            <br />
+            <div class="field">
+                <label class="label">Finished Fighter Level 1</label>
+                <p class="help">Check this only if you have finished level 1 of the fighter checklist.</p>
+                <label class="checkbox">
+                    <input type="checkbox" id="finishedFighter1">
+                    Finished fighter 1
+                </label>
+            </div>
+            <br />
+            <div class="field">
+                <p class="control">
+                    <button class="button is-success" :class="{ 'is-loading': isSubmitting }">
+                        Update
+                    </button>
+                </p>
+            </div>
+            <div class="notification is-success" v-if="showSuccessNotification">
+                <span v-html="notificationMessage"></span>
+            </div>
+            <div class="notification is-danger" v-if="showErrorNotification">
+                <span v-html="notificationMessage"></span>
+            </div>
+        </form>
+    </div>
+</section>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js"></script>
+<script src="/javascripts/memberChangeForm.js"></script>
+
+</body>
+
+</html>

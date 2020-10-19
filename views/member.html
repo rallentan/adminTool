@@ -1,0 +1,101 @@
+<html>
+
+<head>
+    <title>Admin</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--<link rel="stylesheet" href="/stylesheets/style.css">-->
+    <!--<link rel="stylesheet" href="https://cdnjs.com/libraries/bulma">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+          integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+    <% for (let l of member.links) { %>
+        <link rel="<%= l.rel %>" href="<%= l.href %>" type="<%= l.type %>">
+    <% } %>
+</head>
+
+<body>
+
+<section id="root" class="section">
+    <div class="container">
+        <h1 class="title is-1"><%= member.name %></h1>
+        <p>Rank: <%= member.rank %></p>
+        <p v-if="!editingTeam">Team: <%= member.compartment %></p>
+        <div v-if="editingTeam" class="field has-addons">
+            <div class="control">
+                <div class="select">
+                    <select id="teamSelect">
+                        <option value="">None</option>
+                        <option value="Warriors">Warriors</option>
+                        <option value="S-1">S-1</option>
+                        <option value="S-2">S-2</option>
+                        <option value="S-3">S-3</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control">
+                <button class="button is-primary" @click="transferMember(<%= member.id %>)">Transfer</button>
+            </div>
+            <div class="control">
+                <button class="button is-danger" @click="editingTeam = false">Cancel</button>
+            </div>
+        </div>
+        <p>Time in Honour Guard: <%= member.timeInService %></p>
+        <p>Time in Rank: <%= member.timeInGrade %></p>
+        <p>Game rank: <%= member.gameRank %></p>
+        <p>Catapult production: <%= member.catapultProduction %></p>
+        <p>Activity: <%= member.activity %></p>
+        <% if (member.links.find(l => l.rel === 'promote')) { %>
+            <button class="button is-success" @click="promoteMember(<%= member.id %>)">
+                Promote
+            </button>
+        <% } else if (member.links.find(l => l.rel === 'forcePromote')) { %>
+            <button class="button" @click="forcePromoteMember(<%= member.id %>)">
+                Force Promote
+            </button>
+        <% } %>
+        <% if (member.links.find(l => l.rel === 'demote')) { %>
+            <button class="button is-danger" @click="demoteMember(<%= member.id %>)">
+                Demote
+            </button>
+        <% } %>
+        <% if (member.links.find(l => l.rel === 'transfer')) { %>
+            <button class="button is-warning" @click="editingTeam = true">
+                Transfer
+            </button>
+        <% } %>
+        <% if (member.links.find(l => l.rel === 'fixPermissions')) { %>
+            <button class="button" @click="fixPermissions(<%= member.id %>)">
+                Fix Permissions
+            </button>
+        <% } %>
+
+        <h3 class="title is-3">Change Form Activity</h3>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Game Rank</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% for (let changeForm of member.changeForms) { %>
+                <tr>
+                    <td><%= changeForm.date %></td>
+                    <td><%= changeForm.gameRank %></td>
+                </tr>
+            <% } %>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js"></script>
+<script src="/javascripts/member.js"></script>
+
+</body>
+
+</html>

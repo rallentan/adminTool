@@ -1,0 +1,126 @@
+<html>
+
+<head>
+    <title>Admin</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--<link rel="stylesheet" href="/stylesheets/style.css">-->
+    <!--<link rel="stylesheet" href="https://cdnjs.com/libraries/bulma">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+          integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+</head>
+
+<body>
+
+<section id="root" class="section">
+    <div class="container">
+        <h1 class="title is-1">Dashboard</h1>
+
+        <a href="/memberChangeForm">
+            <button class="button is-link">Member Change Form</button>
+        </a>
+        <br/>
+        <br/>
+        <br/>
+
+        <div v-if="unapprovedUsers">
+            <h3 class="title is-3">Users Needing Approval</h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="unapprovedUser in unapprovedUsers">
+                    <td>{{ unapprovedUser.username }}</td>
+                    <td>
+                        <button class="button is-success is-small" @click="approveUser(unapprovedUser.id)">
+                            Approve
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <br/>
+        <br/>
+        <br/>
+
+        <div v-if="members">
+            <h3 class="title is-3">Roster</h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Member</th>
+                    <th>Rank</th>
+                    <th>Team</th>
+                    <th><abbr title="Time-in-Service">TS</abbr></th>
+                    <th><abbr title="Time-in-Grade">TG</abbr></th>
+                    <th title="Activity level as a percentile of all members">Activity</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="member in members">
+                    <td><a v-bind:href="'/member/' + member.id">{{ member.name }}</a></td>
+                    <td>{{ member.rank }}</td>
+                    <td>
+                        {{ member.compartment }}
+                        <span class="icon" title="Transfer" v-if="member.canTransfer">
+                          <i class="fas fa-caret-square-right" style="color:#ffa500" @click="showTeamSelect(member)"></i>
+                        </span>
+                    </td>
+                    <td>{{ member.timeInService }}</td>
+                    <td>{{ member.timeInGrade }}</td>
+                    <td style="text-align: center">{{ member.activity }}</td>
+                    <td>
+                        <span class="icon" title="Promote" v-show="member.eligibleForPromotion && member.canPromote">
+                            <i class="fas fa-caret-square-up" style="color:#00CC00" @click="promoteMember(member.id)"></i>
+                        </span>
+                        <span class="icon" title="Demote" v-show="member.canDemote">
+                            <i class="fas fa-caret-square-down" style="color:#CC0000" @click="demoteMember(member.id)"></i>
+                        </span>
+                        <span class="icon" title="Fix permissions">
+                            <i class="fas fa-screwdriver" style="color:#888888" @click="updatePermissions(member.id)"></i>
+                        </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal" v-bind:class="{'is-active': showTeamSelectModal}">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+            <div class="box" style="text-align: center">
+                <h4 class="title is-4">Transfer {{ selectedMember.name }} to team:</h4>
+                <div class="select">
+                    <select id="teamSelect">
+                        <option value="">None</option>
+                        <option value="Warriors">Warriors</option>
+                        <option value="S-1">S-1</option>
+                        <option value="S-2">S-2</option>
+                        <option value="S-3">S-3</option>
+                    </select>
+                </div>
+                <br />
+                <br />
+                <button class="button is-primary" @click="transferMember()">Transfer</button>
+            </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close" @click="showTeamSelectModal=false"></button>
+    </div>
+</section>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js"></script>
+<script src="/javascripts/index.js"></script>
+
+</body>
+
+</html>

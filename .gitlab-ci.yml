@@ -1,0 +1,34 @@
+# To configure the production machine:
+# $ sudo apt update
+# $ sudo apt install nodejs
+# $ adduser services
+# $ ssh-keygen -t rsa
+
+# To configure SSH on the gitlab-runner client:
+# $ su - gitlab-runner
+# $ ssh-copy-id XXXX@XXXX
+
+variables:
+  PROJECT_NAME: 'adminTool'
+  PROJECT_NAME_LOWER: ''
+  PROJECT_GROUP: '*'
+  PRODUCTION_SSH_URL: '*'
+  PRODUCTION_SSH_PORT: '*'
+
+stages:
+- deploy_to_host
+
+deploy_to_host:
+  stage: deploy_to_host
+  script:
+  - ssh -p$PRODUCTION_SSH_PORT $PRODUCTION_SSH_URL "rm -rf /opt/$PROJECT_NAME"
+  - ssh -p$PRODUCTION_SSH_PORT $PRODUCTION_SSH_URL "mkdir /opt/$PROJECT_NAME"
+  - scp -o stricthostkeychecking=no -r * $PRODUCTION_SSH_URL:/opt/$PROJECT_NAME/
+  - ssh -p$PRODUCTION_SSH_PORT $PRODUCTION_SSH_URL "cd /opt/$PROJECT_NAME ; /usr/bin/npm install"
+  - ssh -p$PRODUCTION_SSH_PORT $PRODUCTION_SSH_URL "if systemctl is-active $PROJECT_NAME; then systemctl restart $PROJECT_NAME; fi"
+
+#build_image:
+#  stage: build_image
+#  script:
+#    - docker build -t XXXXX:5000/$PROJECT_GROUP/$PROJECT_NAME_LOWER:latest .
+#    - docker push XXXXX:5000/$PROJECT_GROUP/$PROJECT_NAME_LOWER:latest
